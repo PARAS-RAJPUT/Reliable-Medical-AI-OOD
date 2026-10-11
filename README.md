@@ -25,6 +25,13 @@ This project implements an end-to-end research benchmark investigating model rel
 * **Semantic-OOD Source**: PathMNIST held-out neoplastic classes (cancer-associated stroma and adenocarcinoma epithelium).
 * **Controlled Corruptions**: Additive Gaussian noise, Gaussian blur, brightness shifts, and contrast attenuations across 3 severity levels.
 
+### Visualizing Distribution Domains
+The model is tested on colorectal histology (in-distribution), microscopic blood cell cytology (near-OOD), and pediatric chest radiographs (far-OOD):
+
+<p align="center">
+  <img src="figures/fig2_representative_samples.png" alt="Representative Samples Across Distribution Domains" width="95%"/>
+</p>
+
 ---
 
 ## 2. Key Research Findings Summary
@@ -39,9 +46,69 @@ This project implements an end-to-end research benchmark investigating model rel
 | **Selective Prediction (80% Cov)** | **88.26%** | **0.8701** | — | — | — | Abstains on uncertain cases; error drops from 18.5% to 11.7% |
 | **Split Conformal Prediction ($\alpha=0.05$)** | **90.41%** (Cov) | — | — | — | — | Prediction sets (avg size 1.54) with finite-sample guarantees |
 
+### Method Comparison Across OOD Regimes
+
+<p align="center">
+  <img src="figures/fig13_summary_comparison.png" alt="OOD Detection Performance Comparison Across Method Families" width="85%"/>
+</p>
+
 ---
 
-## 3. Answers to Core Research Questions
+## 3. Visual Gallery of Research Experiments
+
+### 3.1 Exploratory Data Analysis & Class Distributions
+<p align="center">
+  <img src="figures/fig1_dataset_distributions.png" alt="Dataset Class Distributions" width="95%"/>
+</p>
+
+### 3.2 Baseline Performance & Confusion Matrix
+<p align="center">
+  <img src="figures/fig3_learning_curves.png" alt="Learning Curves" width="48%"/>
+  <img src="figures/fig4_confusion_matrix.png" alt="Confusion Matrix" width="48%"/>
+</p>
+
+### 3.3 Confidence Calibration: Reliability Diagrams & Confidence Histograms
+Temperature scaling ($T^* = 0.9656$) drops ECE from **7.37% to 6.48%**:
+<p align="center">
+  <img src="figures/fig5_reliability_diagrams.png" alt="Reliability Diagrams" width="90%"/>
+</p>
+<p align="center">
+  <img src="figures/fig6_confidence_histograms.png" alt="Confidence Histograms Across Domains" width="75%"/>
+</p>
+
+### 3.4 Out-of-Distribution Detection: Score Distributions & ROC Curves
+Penultimate latent feature Mahalanobis distance cleanly separates both near-OOD and far-OOD medical images:
+<p align="center">
+  <img src="figures/fig7_ood_score_distributions.png" alt="OOD Score Distributions" width="90%"/>
+</p>
+<p align="center">
+  <img src="figures/fig8_roc_curves.png" alt="ROC Curves Across OOD Scenarios" width="90%"/>
+</p>
+<p align="center">
+  <img src="figures/fig9_precision_recall_curves.png" alt="Precision-Recall Curves" width="70%"/>
+</p>
+
+### 3.5 Selective Prediction: Risk-Coverage Abstention Tradeoffs
+Abstaining on the 20% most uncertain predictions increases accuracy from **81.55% to 88.26%**:
+<p align="center">
+  <img src="figures/fig10_risk_coverage_curves.png" alt="Risk-Coverage Curves" width="90%"/>
+</p>
+
+### 3.6 Split-Conformal Prediction & Coverage Under Shift
+Empirical coverage vs. target coverage ($1 - \alpha$) and set efficiency:
+<p align="center">
+  <img src="figures/fig11_conformal_coverage.png" alt="Conformal Coverage Analysis" width="90%"/>
+</p>
+
+### 3.7 Robustness Across Controlled Corruptions
+Diagnostic accuracy collapses under blur (25.79%) and contrast shifts (11.11%), while overconfidence surges (ECE up to 78.12%):
+<p align="center">
+  <img src="figures/fig12_corruption_robustness.png" alt="Robustness Under Image Corruptions" width="90%"/>
+</p>
+
+---
+
+## 4. Answers to Core Research Questions
 
 1. **Distinguishing Familiar from Unfamiliar Images (RQ1)**: Yes. Feature-space Mahalanobis distance separates Far-OOD radiographs with **99.99% AUROC** and Near-OOD blood cells with **96.96% AUROC** ($0.04\%$ FPR95). However, naive output-space softmax probabilities fail when foreign textures trigger uninformative background logits.
 2. **Deep Ensembles vs. Single Networks (RQ2)**: Deep Ensembles ($M=3$) achieve **82.81% AUROC** on Near-OOD cytology compared to **69.64%** for single-model predictive entropy (+13.17% gain), while reducing Expected Calibration Error from 7.37% to 6.61%.
@@ -53,7 +120,7 @@ This project implements an end-to-end research benchmark investigating model rel
 
 ---
 
-## 4. Repository Structure
+## 5. Repository Structure
 
 ```
 HEATHYUIOP/
@@ -90,21 +157,21 @@ HEATHYUIOP/
 
 ---
 
-## 5. Quickstart & Reproducibility Instructions
+## 6. Quickstart & Reproducibility Instructions
 
-### 5.1 Environment Installation
+### 6.1 Environment Installation
 ```bash
 pip install torch torchvision medmnist numpy pandas scikit-learn scipy matplotlib seaborn Pillow jupyter
 ```
 
-### 5.2 Running the Jupyter Notebook
+### 6.2 Running the Jupyter Notebook
 Launch JupyterLab or Jupyter Notebook:
 ```bash
 jupyter lab medical_ai_ood_research.ipynb
 ```
 The notebook is completely pre-executed and self-contained with all cells, plots, tables, and narrative interpretations.
 
-### 5.3 Executing via Standalone CLI Script
+### 6.3 Executing via Standalone CLI Script
 To re-run the full training, calibration, and benchmarking pipeline from scratch:
 ```bash
 python run_experiments.py
@@ -112,7 +179,7 @@ python run_experiments.py
 
 ---
 
-## 6. Scholarly References
+## 7. Scholarly References
 
 1. **Hendrycks, D., & Gimpel, K.** (2017). *A Baseline for Detecting Misclassified and Out-of-Distribution Examples in Neural Networks*. International Conference on Learning Representations (ICLR).
 2. **Liu, W., Wang, X., Owens, J. D., & Li, Y.** (2020). *Energy-based Out-of-distribution Detection*. Advances in Neural Information Processing Systems (NeurIPS), 33.
